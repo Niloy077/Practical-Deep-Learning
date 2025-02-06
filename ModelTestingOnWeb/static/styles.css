@@ -101,12 +101,7 @@ body {
     text-align: center;
 }
 
-.btn:disabled {
-    background-color: #9d9999;
-    cursor: not-allowed;
-}
-
-.btn:hover:not(:disabled) {
+.btn:hover {
     background-color: #004494;
 }
 

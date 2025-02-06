@@ -12,7 +12,7 @@
     <header>
         <div class="navbar">
             <div class="logo">
-                <img src="images/logo.png" alt="ResNet Logo">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/28/ResNet.png" alt="ResNet Logo">
             </div>
             <ul class="nav-links">
                 <li><a href="#">Home</a></li>
@@ -25,20 +25,20 @@
 
     <!-- Main Content -->
     <main>
-        <div class="container">
+        <div id="app" class="container">
             <div class="input-section">
+                <!-- Image Upload Section -->
                 <div class="box">
-                    <h3>Upload Image for Prediction</h3>
-                    <!-- Just enable the button directly, no need for JavaScript to enable it -->
+                    <h3>Upload an Image for Prediction</h3>
                     <input type="file" id="imageInput" accept="image/*" class="input-field">
-                    <button id="submitButton" class="btn">Submit</button>
-                    <p id="image-upload-status">No file uploaded</p>
+                    <button onclick="predict()" id="predictBtn" class="btn">Predict</button>
+                    <p id="result">No output yet</p>
                 </div>
             </div>
             <div class="output-section box">
-                <h3>Prediction Output</h3>
+                <h3>Prediction</h3>
                 <div class="output-display">
-                    <p>No output yet</p>
+                    <p id="predictionResult">No result yet.</p>
                 </div>
             </div>
         </div>
@@ -47,8 +47,24 @@
     <!-- Footer -->
     <footer>
         <hr class="divider">
-        <p>&copy; 2025 ResNet18 Image Classifier. All rights reserved.</p>
+        <p>&copy; 2025 ResNet18 Classifier. All rights reserved.</p>
     </footer>
+
+    <script>
+        async function predict() {
+            const fileInput = document.getElementById("imageInput");
+            const formData = new FormData();
+            formData.append("image", fileInput.files[0]);
+
+            const response = await fetch("/predict", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+            document.getElementById("predictionResult").innerText = "Prediction: " + data.prediction;
+        }
+    </script>
 
 </body>
 </html>

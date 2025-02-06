@@ -3,23 +3,22 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 from torchvision import models
+import json
 
-app = Flask(__name__, static_folder="static")  # Ensures static files are served
+app = Flask(__name__)
 
 # Load Pretrained ResNet18 Model
 model = models.resnet18(pretrained=True)
 model.eval()
 
-# Define Image Transformations (Wihttps://chatgpt.com/c/67a306b1-030c-8000-89f9-feb7ff3dde8cth Normalization)
+# Define Image Transformations
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
-# Load ImageNet Class Labels Correctly
-with open("imagenet_classes.txt") as f:
-    LABELS = [line.strip() for line in f.readlines()]
+# Load ImageNet Class Labels
+LABELS = json.load(open("imagenet_classes.json"))
 
 @app.route("/")
 def home():
@@ -35,9 +34,7 @@ def predict():
         outputs = model(image)
         _, predicted_class = outputs.max(1)
 
-    predicted_idx = predicted_class.item()
-    class_label = LABELS[predicted_idx] if 0 <= predicted_idx < len(LABELS) else "Unknown Class"
-
+    class_label = LABELS[predicted_class.item()]
     return jsonify({"prediction": class_label})
 
 if __name__ == "__main__":
