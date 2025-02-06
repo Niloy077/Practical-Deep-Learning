@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResNet18 Image Classifier</title>
+    <link rel="stylesheet" href="static/styles.css">  <!-- Link to external CSS -->
+</head>
+<body>
+
+    <img id="logo" src="https://upload.wikimedia.org/wikipedia/commons/2/28/ResNet.png" alt="ResNet Logo">
+    
+    <div class="container">
+        <h2>Upload an Image for Prediction</h2>
+        <input type="file" id="imageInput" accept="image/*">
+        <button onclick="predict()">Predict</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        async function predict() {
+            const fileInput = document.getElementById("imageInput");
+            if (!fileInput.files.length) {
+                alert("Please select an image first.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("image", fileInput.files[0]);
+
+            document.getElementById("result").innerText = "Predicting...";
+
+            try {
+                const response = await fetch("/predict", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+                document.getElementById("result").innerText = "Prediction: " + data.prediction;
+            } catch (error) {
+                document.getElementById("result").innerText = "Error: Could not get prediction.";
+                console.error("Prediction error:", error);
+            }
+        }
+    </script>
+
+</body>
+</html>
