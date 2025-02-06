@@ -30,9 +30,15 @@
                 <!-- Image Upload Section -->
                 <div class="box">
                     <h3>Upload an Image for Prediction</h3>
-                    <input type="file" id="imageInput" accept="image/*" class="input-field">
+                    <input type="file" id="imageInput" accept="image/*" class="input-field" onchange="previewImage()">
                     <button onclick="predict()" id="predictBtn" class="btn">Predict</button>
-                    <p id="result">No output yet</p>
+                    <p id="result"></p>
+
+                    <!-- Image Preview Section -->
+                    <div id="imagePreviewContainer" style="display:none;">
+                        <h4>Selected Image:</h4>
+                        <img id="imagePreview" src="" alt="Selected Image" style="max-width: 100%; max-height: 300px; margin-top: 10px;">
+                    </div>
                 </div>
             </div>
             <div class="output-section box">
@@ -51,6 +57,26 @@
     </footer>
 
     <script>
+        // Function to preview the image
+        function previewImage() {
+            const fileInput = document.getElementById("imageInput");
+            const previewContainer = document.getElementById("imagePreviewContainer");
+            const previewImage = document.getElementById("imagePreview");
+
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Function to make prediction
         async function predict() {
             const fileInput = document.getElementById("imageInput");
             const formData = new FormData();
